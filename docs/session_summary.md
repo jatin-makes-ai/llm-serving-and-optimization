@@ -30,6 +30,10 @@ Today we covered the full production engineering lifecycle for large language mo
 | **#5** | `TinyLlama-1.1B` (Speed Baseline)| 30 streams | **2,959.3 tok/s** | **6.9 ms** | 45.3 ms | 55.0% (Adv: 30%) | Fastest generation (~140 tok/s/user), but fails all math (0/5) and breaks JSON schemas. |
 | **#6** | `Qwen2.5-1.5B` (Prefix Caching Trial) | 1 stream (Seq) | — | 9.6 ms | **23.9 ms** *(vs 91.9 ms)* | 100% | **80.9% TTFT drop** on 1,500-token shared prompt via Radix Tree reuse. |
 | **#7** | `Qwen2.5-1.5B` (Speculative Decoding) | 1 stream | 6.6 tok/s | 155.9 ms | 77.8 ms | 100% | **Speculative Ratio Trap**: Drafting on 0.5B slowed down a 1.5B model due to low $T_{\text{target}}/T_{\text{draft}}$ ratio. |
+| **#8** | `Qwen2.5-1.5B` (RTX 3090 Baseline BF16) | 30 streams | 2,382.7 tok/s | 9.1–9.9 ms | 114.2 ms | **85.0%** | Baseline on 24GB RTX 3090; 2.89 GiB weight VRAM, 15.78 GiB KV cache. |
+| **#9** | `Qwen2.5-1.5B-AWQ` (Native AWQ INT4) | 30 streams | 2,484.8 tok/s | 9.3–9.9 ms | 124.1 ms | **75.0%** | Slashes weights by 62% (1.10 GiB); frees +1.79 GiB KV cache. Reference kernels stall at high batch sizes. |
+| **#10** | `Qwen2.5-1.5B-AWQ` (Marlin Ampere Kernels) | 30 streams | **2,779.4 tok/s** | **8.1–8.9 ms** | 109.2 ms | **75.0%** | **38% faster single-stream eval (766 tok/s, 8.0ms TPOT)** via async Tensor Core double-buffering. |
+| **#11** | `Qwen2.5-0.5B-Custom-AWQ` (Self-Quantized) | 30 streams | **4,004.8 tok/s** | **5.8–6.1 ms** | 49.2 ms | **60.0%** | Quantized from scratch in 76s via AutoAWQ; 438 MB weights, 100% RAG faithfulness. |
 
 ---
 
